@@ -1,0 +1,81 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style1.css' %}">
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+
+    <title>Exam Registration</title>
+  </head>
+  <body>
+    {% include "student_menubar.html" %}
+
+  <div class="content">
+    
+    <div class="container">
+      <div class="row align-items-stretch justify-content-center no-gutters">
+        <div class="col-md-7">
+          <div class="form h-100 contact-wrap p-5">
+            <h3 class="text-center">Exam Registration</h3>
+            <form class="mb-5" method="post" id="contactForm" name="contactForm" action="/registeringexam/">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Student Exam Id *</label>
+                    <input type="text" class="form-control" name="id" id="id" placeholder="Student Exam id" value="{{studexamid}}" readonly>
+                  </div>
+                <div class="col-md-12 form-group mb-3">
+                  <label for="" class="col-form-label">Student Name *</label>
+                  <input type="text" class="form-control" name="studname" id="studname" placeholder="Student name" value="{{data.student_name}}">
+                </div>
+                <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Exam Name *</label>
+                    <input type="text" class="form-control" name="examname" id="examname" placeholder="Exam Name" value="{{data2.exam_name}}">
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-md-5 form-group text-center">
+                  <input type="submit" value="Submit" class="btn btn-block btn-primary rounded-5 py-2 px-4" onclick="myFunction()">
+                  <span class="submitting"></span>
+                </div>
+              </div>
+            </form>
+
+            <div id="form-message-warning mt-4"></div> 
+            <div id="form-message-success">
+              Exam Registered!
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    function myFunction() {
+      alert("Registered Successfully!");
+    }
+    </script>
+    
+    
+
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  </body>
+</html>

@@ -1,0 +1,61 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts2/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css2/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css2/bootstrap.min.css' %}">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css2/style.css' %}">
+
+    <title>View Result</title>
+  </head>
+  {% include "staff_menubar.html" %}
+
+  <body>
+
+  <div class="content" style="background-color: #3c373e;">
+    
+    <div class="container">
+      <h2 style="color: white;">{{data1.student_id.student_name}}</h2>
+      
+
+      <div class="table-responsive">
+
+        <table class="table table-striped custom-table">
+          <thead class="header">
+            <tr>
+              
+              <th scope="col">Exam Name</th>
+              <th scope="col">Attended Date</th>
+              <th scope="col">Mark</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr scope="row">
+                {% for ct in data1 %}
+                      <td>{{ct.exam_id.exam_name}}</td>
+                      <td>{{ct.date}}</td>
+                      <td><a href="#">{{ct.result}}</a></td>        
+            </tr>
+            {% endfor %}          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+    <script src="{% static 'js2/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js2/popper.min.js' %}"></script>
+    <script src="{% static 'js2/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js2/main.js' %}"></script>
+  </body>
+</html>

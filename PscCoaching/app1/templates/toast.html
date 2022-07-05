@@ -1,0 +1,87 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+
+
+    <title>Events</title>
+
+
+
+
+
+
+
+  </head>
+  <body>
+  {% include "staff_menubar.html" %}
+
+  <div class="content">
+    
+    <div class="container">
+      <div class="row align-items-stretch justify-content-center no-gutters">
+        <div class="col-md-7">
+          <div class="form h-100 contact-wrap p-5">
+            <h3 class="text-center">Event</h3>
+            <form class="mb-5" method="post" id="contactForm" name="contactForm" action="/adminmenubar">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Event Id *</label>
+                    <input type="text" class="form-control" name="id" id="id" placeholder="Event id" value="{{eventid}}" readonly>
+                  </div>
+                <div class="col-md-12 form-group mb-3">
+                  <label for="" class="col-form-label">Event Name *</label>
+                  <input type="text" class="form-control" name="name" id="name" placeholder="Event name">
+                </div>
+                <div class="col-md-12 form-group mb-3">
+                  <label for="" class="col-form-label">Date *</label>
+                  <input type="date" class="form-control" name="date" id="date"  placeholder="Date">
+                </div>
+              </div>
+              <div class="row mb-5">
+                <div class="col-md-12 form-group mb-3">
+                  <label for="message" class="col-form-label">Description *</label>
+                  <textarea class="form-control" name="desc" id="desc" cols="30" rows="4"  placeholder="Description"></textarea>
+                </div>
+                <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Status *</label>
+                    <input type="text" class="form-control" name="status" id="status"  placeholder="Status">
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-md-5 form-group text-center">
+                  <input type="submit" value="Submit" class="btn btn-block btn-primary rounded-5 py-2 px-4" onclick="return confirm('Are you sure?');">
+                  <span class="submitting"></span>
+                </div>
+              </div>
+            </form>
+            
+
+            <div id="form-message-warning mt-4"></div> 
+            <div id="form-message-success">
+              Event Added!
+            </div>
+            
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+ 
+  <!-- <script>
+    function myFunction() {
+      var txt;
+      if (confirm("Press a button!")) {
+        txt = "You pressed OK!";
+      } else {
+        txt = "You pressed Cancel!";
+      }
+      document.getElementById("demo").innerHTML = txt;
+    }
+    </script> -->
+
+  </body>
+</html>
