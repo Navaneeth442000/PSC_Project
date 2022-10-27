@@ -90,7 +90,7 @@ urlpatterns = [
     path('viewstudentresult/', views.viewstudentresult),
     path('viewcourse/', views.viewcourse),
     path('quiz/', views.quiz),
-    path('search/', views.search),
+    path('studentsearch/', views.studentsearch),
     path('searching/', views.searching),
     path('viewreview/', views.viewreview),
     path('logoutadmin/', views.logoutadmin),
@@ -102,6 +102,16 @@ urlpatterns = [
     path('studentindex/', views.studentindex),
     path('staffindex/', views.staffindex),
     path('toast/', views.toast),
+    path('staffsearch/', views.staffsearch),
+    path('staffsearching/', views.staffsearching),
+    path('paymentsearch/', views.paymentsearch),
+    path('paymentsearching/', views.paymentsearching),
+    path('admissionsearch/', views.admissionsearch),
+    path('admissionsearching/', views.admissionsearching),
+    path('mockexamresult/', views.mockexamresult),
+    path('mockexamresult1/', views.mockexamresult1),
+    path('sa/', views.sa),
+    path('viewanswer/', views.viewanswer),
 
 
 

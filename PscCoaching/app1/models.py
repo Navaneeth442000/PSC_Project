@@ -60,6 +60,8 @@ class student_admission(models.Model):
     phone = models.CharField(max_length=30)
     email = models.CharField(max_length=50)
     qualification = models.CharField(max_length=90)
+    month = models.CharField(max_length=20)
+    year = models.CharField(max_length=20)
 
     
     class Meta:
@@ -156,6 +158,9 @@ class fee_payment(models.Model):
     account_no = models.CharField(max_length=30)
     ifsc_code = models.CharField(max_length=30)
     status = models.CharField(max_length=30)
+    month = models.CharField(max_length=30)
+    year = models.CharField(max_length=30)
+    
     
     class Meta:
         db_table = "fee_payment"
@@ -168,6 +173,29 @@ class review(models.Model):
     
     class Meta:
         db_table = "review"
+
+class check_error(models.Model):
+    user_id = models.CharField(max_length=90,primary_key=True)
+    student_id = models.ForeignKey(student_admission,on_delete=models.CASCADE)
+    result_id = models.ForeignKey(result,on_delete=models.CASCADE)
+    question_id = models.CharField(max_length=150)
+    answer = models.CharField(max_length=30)
+    
+    class Meta:
+        db_table = "check_error"
+
+
+class option_error(models.Model):
+    answer_id = models.CharField(max_length=90,primary_key=True)
+    student_id = models.ForeignKey(student_admission,on_delete=models.CASCADE)
+    exam_id = models.ForeignKey(exam,on_delete=models.CASCADE)
+    student_exam_id = models.ForeignKey(exam_registration,on_delete=models.CASCADE)
+    question_id = models.CharField(max_length=150)
+    answer = models.CharField(max_length=30)
+    date = models.CharField(max_length=30)
+    
+    class Meta:
+        db_table = "option_error"
 
 
 class tbl_idgen(models.Model):
@@ -182,6 +210,8 @@ class tbl_idgen(models.Model):
     resultid=models.IntegerField()
     feeid=models.IntegerField()
     reviewid=models.IntegerField()
+    errorid=models.IntegerField()
+    ansid=models.IntegerField()
 
 
     class Meta:

@@ -1,0 +1,155 @@
+
+{{details.student_name}}
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Vesperr Bootstrap Template - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'img/favicon.png' %}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/aos/aos.css" rel="stylesheet' %}">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Vesperr - v4.7.0
+  * Template URL: https://bootstrapmade.com/vesperr-free-bootstrap-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+    {% include "admin_menubar.html" %}
+<!-- ======= Pricing Section ======= -->
+<section id="course" class="pricing">
+    <div class="container">
+        <br><br>
+      <div class="section-title">
+        <h2>Report</h2>
+        <p></p>
+      </div>
+
+      <div>
+ 
+        <div class="col-lg-12 col-md-6 mt-6 mt-md-0" >
+          <div class="box recommended" data-aos="zoom-in" data-aos-delay="100">
+            <h1>Staff Details</h1><br>
+            <!-- <h4><sup>Rs</sup>h<span> / month</span></h4> -->
+            <!-- <ul>
+              <li><h5>Admission Id : {{details.student_id}}</h5></li>
+              <li><h5>Course : {{details.course_id.course_name}}</h5></li>
+              <li><h5>Admission Date : {{details.admission_date}}</h5></li>
+              <li><h5>House Name : {{details.house_name}}</h5></li>
+              <li><h5>Street : {{details.street}}</h5></li>
+              <li><h5>District : {{details.district}}</h5></li>
+              <li><h5>Date Of Birth : {{details.dob}}</h5></li>
+              <li><h5>Phone : {{details.phone}}</h5></li>
+              <li><h5>E mail : {{details.email}}</h5></li>
+              <li><h5>Qualification : {{details.qualification}}</h5></li>
+             
+            </ul> -->
+            <center>
+            <table>
+                {% for details in details %}
+                <tr>
+                    <td><h5>Name</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.staff_name}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Staff Id</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.staff_id}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Joining Date</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.doj}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>House Name</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.house_name}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Street</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.street}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>District</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.district}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Date Of Birth</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.dob}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Phone</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.phone}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>E mail</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.email}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Qualification</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.qualification}}</h5></td>
+                </tr>
+                <tr>
+                    <td><h5>Experience</h5></td>
+                    <td><h5>&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;</h5></td>
+                    <td><h5>{{details.experience}}</h5></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% endfor %}
+            </table>
+             </center>
+
+            <!-- <div class="btn-wrap">
+              <a href="/registerstudent" class="btn-buy">Fee Status</a>
+            </div> -->
+          </div>
+        </div>
+  
+  
+      </div>
+
+    </div>
+  </section><!-- End Pricing Section -->
+</body>
+</html>
+
+

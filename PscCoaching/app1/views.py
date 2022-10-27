@@ -1,7 +1,10 @@
 import datetime
+from django.contrib import messages
 from django.shortcuts import render,redirect,HttpResponse
-from app1.models import course, exam, exam_registration, fee_payment, question, question_bank, result, review, student_admission,tbl_idgen,staff,student,login,event
+from app1.models import check_error, course, exam, exam_registration, fee_payment, option_error, question, question_bank, result, review, student_admission,tbl_idgen,staff,student,login,event
 from django.core.files.storage import FileSystemStorage
+import os
+from twilio.rest import Client
 
 
 def sample(request):
@@ -212,7 +215,11 @@ def admission(request,p1):
         data1.student_id=data.student_appli_id
         data1.student_name=data.student_name
         data1.course_id=data.course_id
-        data1.admission_date=data.admission_date
+        now = datetime.datetime.now()
+        time1 = now.strftime("%d-%m-%Y")
+        f1=datetime.datetime.strptime(time1,"%d-%m-%Y")
+        f2=f1.strftime("%d-%m-%Y")
+        data1.admission_date=time1
         data1.house_name=data.house_name
         data1.street=data.street
         data1.district=data.district
@@ -220,6 +227,8 @@ def admission(request,p1):
         data1.phone=data.phone
         data1.email=data.email
         data1.qualification=data.qualification
+        data1.month=f1.month
+        data1.year=f1.year
         data1.save()
         
         data2=login()
@@ -227,6 +236,16 @@ def admission(request,p1):
         data2.password=data.phone
         data2.category="Student"
         data2.save()
+
+        # account_sid = 'AC113c9ebddf657b7bcdc45fcee48c1d45'
+        # auth_token = 'c7c3be424179711e3b7fafad6ae0d021'
+        # client = Client(account_sid, auth_token)
+
+        # message = client.messages.create(
+        #     body='User Registration Sucessfull!!!\nYour user ID is '+str(data.student_appli_id)+'\nPassword is : '+str(data.phone),
+        #     from_='+19785107636',
+        #     to='+91'+data.phone
+        # )
 
         return redirect('/viewapplication')
 def studenttbl(request):
@@ -256,7 +275,9 @@ def logins(request):
                     return redirect('/staffindex')  
                 elif type=="Student":
                     request.session['suid']=un
-                    return redirect('/studentindex')  
+                    user=student_admission.objects.get(student_id=un)
+                    return render(request,"student_index.html",{'user':user})
+                    # return redirect('/studentindex')  
                 
                 else:
                     return HttpResponse("Invalid account type")
@@ -264,13 +285,19 @@ def logins(request):
             return HttpResponse("Invalid user")
 def logoutadmin(request):
     del request.session['aid']
-    return render(request,'index.html')
+    data=review.objects.all()
+    data1=course.objects.all()
+    return render(request,"index.html",{'data':data,'data1':data1})
 def logoutstudent(request):
     del request.session['suid']
-    return render(request,'index.html')
+    data=review.objects.all()
+    data1=course.objects.all()
+    return render(request,"index.html",{'data':data,'data1':data1})
 def logoutstaff(request):
     del request.session['staid']
-    return render(request,'index.html')
+    data=review.objects.all()
+    data1=course.objects.all()
+    return render(request,"index.html",{'data':data,'data1':data1})
 def studentmenubar(request):
     return render(request,'student_menubar.html')
 def indexmenubar(request):
@@ -301,8 +328,8 @@ def addingevent(request):
             data1=tbl_idgen.objects.get(id=1)
             data1.eventid=request.session["eventid"]
             data1.save()
-            # return render(request,"staff_menubar.html")
-            return redirect('/addevent')
+            messages.success(request,"Event Added Successfully")
+            return render(request,"staff_index.html")
 def viewevent(request):
     if 'suid' not in request.session:
         return render(request,"login_page.html")
@@ -522,6 +549,7 @@ def mockexamselected(request):
         return render(request,"login_page.html")
     else:
         data=exam_registration.objects.get(student_exam_id=request.POST.get('mockexam'))
+        request.session['exm']=request.POST.get('mockexam')
         data.status="Attended"
         data.save()
         data1=question.objects.filter(exam_id_id=data.exam_id_id).filter(status="Not Attended")
@@ -544,6 +572,7 @@ def option1(request,opid,qid,eid):
                 id = int(id+1)
                 resultid = "RESULT_00" + str(id)
                 request.session['resultid'] = resultid
+                print("op1 rrrrrrrrrrrrrrrrrrrrrrr",resultid)
                 data2=result()
                 data2.result_id=resultid
                 data2.exam_id_id=eid
@@ -560,7 +589,27 @@ def option1(request,opid,qid,eid):
                 data2.result=int(data2.result)+1
                 data2.status="active"
                 data2.save() 
-        
+        else:
+            data1 = tbl_idgen.objects.get(id=1)
+            id = data1.ansid
+            id = int(id+1)
+            ansid = "ANS_00" + str(id)
+            request.session["ansid"] = id
+
+            dd=question.objects.get(question_id=qid)
+            data3=option_error()
+            data3.answer_id=ansid
+            data3.question_id=dd.question
+            data3.answer=data.answer
+            data3.student_id_id=request.session['suid']
+            data3.exam_id_id=eid
+            data3.student_exam_id_id=request.session['exm']
+            data3.date=datetime.datetime.now().strftime ("%Y-%m-%d")
+            data3.save()
+
+            data1=tbl_idgen.objects.get(id=1)
+            data1.ansid=id
+            data1.save()
         data.status="Attended"
         data.save()
         
@@ -591,12 +640,34 @@ def option2(request,opid,qid,eid):
                 data2.date=time1
                 data2.save()
             else:
-                result_id=request.session['resultid']   
+                result_id=request.session['resultid']  
+                print("op2 rrrrrrrrrrrrrrrrrrrrrrr",result_id) 
+                 
                 data2=result.objects.get(result_id=result_id)
                 data2.result=int(data2.result)+1
                 data2.status="active"
                 data2.save() 
-        
+        else:
+            data1 = tbl_idgen.objects.get(id=1)
+            id = data1.ansid
+            id = int(id+1)
+            ansid = "ANS_00" + str(id)
+            request.session["ansid"] = id
+
+            dd=question.objects.get(question_id=qid)
+            data3=option_error()
+            data3.answer_id=ansid
+            data3.question_id=dd.question
+            data3.answer=data.answer
+            data3.student_id_id=request.session['suid']
+            data3.exam_id_id=eid
+            data3.student_exam_id_id=request.session['exm']
+            data3.date=datetime.datetime.now().strftime ("%Y-%m-%d")
+            data3.save()
+
+            data1=tbl_idgen.objects.get(id=1)
+            data1.ansid=id
+            data1.save()
         data.status="Attended"
         data.save()
         
@@ -632,7 +703,27 @@ def option3(request,opid,qid,eid):
                 data2.result=int(data2.result)+1
                 data2.status="active"
                 data2.save() 
-        
+        else:
+            data1 = tbl_idgen.objects.get(id=1)
+            id = data1.ansid
+            id = int(id+1)
+            ansid = "ANS_00" + str(id)
+            request.session["ansid"] = id
+
+            dd=question.objects.get(question_id=qid)
+            data3=option_error()
+            data3.answer_id=ansid
+            data3.question_id=dd.question
+            data3.answer=data.answer
+            data3.student_id_id=request.session['suid']
+            data3.exam_id_id=eid
+            data3.student_exam_id_id=request.session['exm']
+            data3.date=datetime.datetime.now().strftime ("%Y-%m-%d")
+            data3.save()
+
+            data1=tbl_idgen.objects.get(id=1)
+            data1.ansid=id
+            data1.save()
         data.status="Attended"
         data.save()
         
@@ -651,6 +742,7 @@ def option4(request,opid,qid,eid):
                 id = data1.resultid
                 id = int(id+1)
                 resultid = "RESULT_00" + str(id)
+                request.session['reid'] = resultid
                 request.session['resultid'] = resultid
                 data2=result()
                 data2.result_id=resultid
@@ -668,7 +760,27 @@ def option4(request,opid,qid,eid):
                 data2.result=int(data2.result)+1
                 data2.status="active"
                 data2.save() 
-        
+        else:
+            data1 = tbl_idgen.objects.get(id=1)
+            id = data1.ansid
+            id = int(id+1)
+            ansid = "ANS_00" + str(id)
+            request.session["ansid"] = id
+
+            dd=question.objects.get(question_id=qid)
+            data3=option_error()
+            data3.answer_id=ansid
+            data3.question_id=dd.question
+            data3.answer=data.answer
+            data3.student_id_id=request.session['suid']
+            data3.exam_id_id=eid
+            data3.student_exam_id_id=request.session['exm']
+            data3.date=datetime.datetime.now().strftime ("%Y-%m-%d")
+            data3.save()
+
+            data1=tbl_idgen.objects.get(id=1)
+            data1.ansid=id
+            data1.save()
         data.status="Attended"
         data.save()
         
@@ -685,7 +797,8 @@ def finishexam(request):
             for x in data2:
                 x.status="Not Attended"
                 x.save()
-            return render(request,'mock_exam_selection.html',{'data1':data})
+            st=student_admission.objects.get(student_id=request.session['suid'])
+            return render(request,'mock_exam_result1.html',{'st':st})
         else:
 
             resultid=request.session['resultid'] 
@@ -702,9 +815,29 @@ def finishexam(request):
             data1=tbl_idgen.objects.get(id=1)
             data1.resultid=int(data1.resultid)+1
             data1.save()
-            del request.session['resultid']      
-            data=exam_registration.objects.filter(student_id=request.session['suid']).filter(status="Not Attended")
-            return render(request,'mock_exam_selection.html',{'data1':data})
+            data1=tbl_idgen.objects.get(id=1)
+            data1.ansid=request.session['ansid']
+            data1.save()
+            del request.session['resultid']
+            print("dddddddddddddddddddddddddddddddddddddddddd")
+            t1=request.session['exm']
+            data5=exam_registration.objects.get(student_exam_id=t1)
+            # data10=option_error.objects.filter(student_id_id=request.session['suid']).filter(student_exam_id_id=request.session['exm']).filter(exam_id_id=data5.exam_id_id).filter(date=datetime.datetime.now().strftime ("%Y-%m-%d"))
+            st=request.session['suid']
+            request.session['studid']=st
+            stdexid=request.session['exm']
+            request.session['stud_exm_id']=stdexid
+            exid=data5.exam_id_id
+            request.session['exm_id']=exid
+
+
+
+            # request.session['correctand']=data10
+            return render(request,'mock_exam_result.html',{'data1':data}) 
+            # return render(request,'view_answer.html',{'data1':data})     
+            # data=exam_registration.objects.filter(student_id=request.session['suid']).filter(status="Not Attended")
+            # return render(request,'mock_exam_selection.html',{'data1':data})
+            
 def feepayment(request):
     if 'suid' not in request.session:
         return render(request,"login_page.html")
@@ -727,12 +860,17 @@ def feepayed(request):
             data.course_id_id=request.POST.get('course')
             data.fee=request.POST.get('fee')
             now = datetime.datetime.now()
-            time1 = now.strftime("%Y-%m-%d")
+            time1 = now.strftime("%d-%m-%Y")
+            f1=datetime.datetime.strptime(time1,"%d-%m-%Y")
+            print(type(f1))
+            f2=f1.strftime("%d-%m-%Y")
             data.payment_date=time1
             data.bank=request.POST.get('bank')
             data.account_no=request.POST.get('acc_no')
             data.ifsc_code=request.POST.get('ifsc')
             data.status="Payed"
+            data.month=f1.month
+            data.year=f1.year
             data.save()
 
             data1=tbl_idgen.objects.get(id=1)
@@ -775,7 +913,7 @@ def addingreview(request):
             data1.save()
         return render(request,'student_index.html')
 def selectfeecollection(request):
-    if 'suid' not in request.session:
+    if 'staid' not in request.session:
         return render(request,"login_page.html")
     else:
         data=student_admission.objects.all()
@@ -810,7 +948,7 @@ def viewpubliccourse(request):
 def quiz(request):
     data=question.objects.all()
     return render(request,'snippets.html',{'data1':data})
-def search(request):
+def studentsearch(request):
     if 'aid' not in request.session:
         return render(request,"login_page.html")
     else:
@@ -848,4 +986,64 @@ def staffindex(request):
     return render(request,'staff_index.html')
 def toast(request):
     return render(request,'toast.html')
+def staffsearch(request):
+    return render(request,'staff_search.html')
+def staffsearching(request):
+    if 'aid' not in request.session:
+        return render(request,"login_page.html")
+    else:
+        data=request.POST.get('search')
+        if data:
+            search_result=staff.objects.filter(staff_id__icontains=data)
+            if search_result:
+                return render(request,'staff_search_display.html',{'details':search_result})
+            else:
+                return HttpResponse("Staff Details Not Found")
+        return render(request,"staff_search.html")
+def paymentsearch(request):
+    return render(request,'payment_search.html')
+def paymentsearching(request):
+    if 'aid' not in request.session:
+        return render(request,"login_page.html")
+    else:
+        m=request.POST.get('month')
+        y=request.POST.get('year')
+        data=fee_payment.objects.filter(year=y).filter(month=m)
+        return render(request,"payment_search_display.html",{'data':data})
+def admissionsearch(request):
+    return render(request,'admission_search.html')
+def admissionsearching(request):
+    if 'aid' not in request.session:
+        return render(request,"login_page.html")
+    else:
+        m=request.POST.get('month')
+        y=request.POST.get('year')
+        data=student_admission.objects.filter(year=y).filter(month=m)
+        return render(request,"admission_search_display.html",{'data':data})
+def mockexamresult(request):
+    return render(request,'mock_exam_result.html')
+def mockexamresult1(request):
+    return render(request,'mock_exam_result1.html')
+def sa(request):
+    data=option_error.objects.filter(student_id_id=request.session['suid']).filter(exam_id_id=request.session['exm']).filter(date=datetime.datetime.now().strftime ("%Y-%m-%d"))
+    return render(request,'sample.html',{'data1':data})
+def viewanswer(request):
+
+    # st=request.session['suid']
+    # request.session['studid']=st
+    # stdexid=request.session['stud_exm_id']
+    # exid=request.session['exm_id']
+    data=option_error.objects.filter(student_id_id=request.session['suid']).filter(student_exam_id_id=request.session['stud_exm_id']).filter(exam_id_id=request.session['exm_id']).filter(date=datetime.datetime.now().strftime ("%Y-%m-%d"))
+
+
+
+
+
+
+
+    # data=request.session['correctand']
+    return render(request,'view_answer.html',{'data1':data})
+
+
+
 # Create your views here.

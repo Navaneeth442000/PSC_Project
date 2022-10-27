@@ -1,0 +1,101 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style1.css' %}">
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+
+    <title>Payment Search</title>
+  </head>
+  <body>
+  {% include "admin_menubar.html" %}
+
+  <div class="content">
+    
+    <div class="container">
+      <div class="row align-items-stretch justify-content-center no-gutters">
+        <div class="col-md-7">
+          <div class="form h-100 contact-wrap p-5">
+            <h3 class="text-center">Search Payment</h3>
+            <form class="mb-5" method="post" id="contactForm" name="contactForm" action="/paymentsearching/">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Year *</label>
+                    <input type="text" class="form-control" name="year" id="name" placeholder="Year" required>
+                </div>
+                  <div class="col-md-12 form-group mb-3">
+                    <label for="" class="col-form-label">Month *</label>
+                    <p style="color: red; font-style: italic;" id="error"></p>
+                    <select class="form-select" aria-label="Default select example" name="month" id="select">
+                        <option value="1" selected>Jan</option>
+                        <option value="2" selected>Feb</option>
+                        <option value="3" selected>Mar</option>
+                        <option value="4" selected>Apr</option>
+                        <option value="5" selected>May</option>
+                        <option value="6" selected>Jun</option>
+                        <option value="7" selected>Jul</option>
+                        <option value="8" selected>Aug</option>
+                        <option value="9" selected>Sep</option>
+                        <option value="10" selected>Oct</option>
+                        <option value="11" selected>Nov</option>
+                        <option value="12" selected>Dec</option>
+                        <option value="select" selected>Select</option>
+                      </select>
+                </div>
+            </div>
+              <div class="row justify-content-center">
+                <div class="col-md-5 form-group text-center">
+                  <input type="submit" value="Search" class="btn btn-block btn-primary rounded-5 py-2 px-4" onclick="validate(event)">
+                  <span class="submitting"></span>
+                </div>
+              </div>
+            </form>
+
+            <div id="form-message-warning mt-4"></div> 
+            <div id="form-message-success">
+              Exam Selected!
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function validate(event)
+    {
+      var fee = document.getElementById("select").value;
+    if(fee=="select")
+    {
+      document.getElementById("error").innerHTML = "Select a month";
+      event.preventDefault();
+    }else{
+      document.getElementById("error").innerHTML = "";
+      }
+    }
+    </script>
+    
+    
+
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+
+  </body>
+</html>
